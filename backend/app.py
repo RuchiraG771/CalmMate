@@ -1,77 +1,55 @@
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+# Database configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db = SQLAlchemy(app)
 
-# ======================
-# DATABASE MODEL
-# ======================
-
+# User table
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100), unique=True, nullable=False)
-    age = db.Column(db.Integer)
-    mobile = db.Column(db.String(20))
-    password = db.Column(db.String(200), nullable=False)
+    username = db.Column(db.String(100))
+    password = db.Column(db.String(100))
 
-# ======================
-# ROUTES
-# ======================
-
+# Home route
 @app.route("/")
 def home():
     return "Backend is running 🚀"
 
-@app.route("/api/signup", methods=["POST"])
+# Signup route
+@app.route("/signup", methods=["POST"])
 def signup():
     data = request.json
     username = data.get("username")
     password = data.get("password")
-    age = data.get("age")
-    mobile = data.get("mobile")
 
-    if User.query.filter_by(username=username).first():
-        return jsonify({"message": "User already exists"}), 400
-
-    hashed_password = generate_password_hash(password)
-
-    new_user = User(
-        username=username,
-        age=age,
-        mobile=mobile,
-        password=hashed_password
-    )
+    new_user = User(username=username, password=password)
 
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({"message": "User created successfully"})
+    return jsonify({
+        "message": "User created",
+        "username": username
+    })
 
-@app.route("/api/login", methods=["POST"])
-def login():
-    data = request.json
-    username = data.get("username")
-    password = data.get("password")
+# Show all users
+@app.route("/users")
+def get_users():
+    users = User.query.all()
 
-    user = User.query.filter_by(username=username).first()
-
-    if user and check_password_hash(user.password, password):
-        return jsonify({
-            "message": "Login successful",
+    result = []
+    for user in users:
+        result.append({
+            "id": user.id,
             "username": user.username
         })
-    else:
-        return jsonify({"message": "Invalid credentials"}), 401
 
-# ======================
+    return jsonify(result)
 
 if __name__ == "__main__":
     with app.app_context():
