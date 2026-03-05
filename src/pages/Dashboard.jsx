@@ -180,7 +180,7 @@ export default function Dashboard() {
           </div>
 
           <div className="mood-options">
-
+                                          
   {[
     { label: "Very Sad", emoji: "😢" },
     { label: "Sad", emoji: "🙁" },
