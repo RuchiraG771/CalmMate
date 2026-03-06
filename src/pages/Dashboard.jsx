@@ -1,9 +1,11 @@
-import TextAnalysis from "../features/TextAnalysis";
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 import logo from "../assets/logo.png";
 
 export default function Dashboard() {
+
+  const navigate = useNavigate();   // ⭐ navigation
 
   const [activeTab, setActiveTab] = useState("Breathing");
   const [activeMenu, setActiveMenu] = useState("Dashboard");
@@ -11,8 +13,7 @@ export default function Dashboard() {
   const [showProfile, setShowProfile] = useState(false);
   const profileRef = useRef(null);
 
-  /* ⭐ ADD THIS LINE */
-  const [selectedMood, setSelectedMood] = useState(null);;
+  const [selectedMood, setSelectedMood] = useState(null);
 
   /* ===== CLOSE PROFILE WHEN CLICK OUTSIDE ===== */
   useEffect(() => {
@@ -39,7 +40,6 @@ export default function Dashboard() {
     { name: "Journal", icon: "📓" }
   ];
 
-  /* ================= UI ================= */
   return (
     <div className="dashboard">
 
@@ -86,7 +86,7 @@ export default function Dashboard() {
 
         </div>
 
-      </div> {/* ✅ TOPBAR CLOSED CORRECTLY */}
+      </div>
 
 
       {/* ========= SECOND NAVBAR ========= */}
@@ -106,11 +106,6 @@ export default function Dashboard() {
 
       {/* ========= MAIN AREA ========= */}
       <div className="main-area">
-      <div className="content-area">
-
-{activeMenu === "Text" && <TextAnalysis />}
-
-</div>
 
         {/* ===== LEFT SIDEBAR ===== */}
         <div className="sidebar">
@@ -126,7 +121,7 @@ export default function Dashboard() {
 
           <div
             className={`menu-item ${activeMenu==="Text"?"active-menu":""}`}
-            onClick={()=>setActiveMenu("Text")}
+            onClick={() => navigate("/text-analysis")}  // ⭐ open new page
           >
             📝 <span>Text Analysis</span>
           </div>
@@ -186,29 +181,29 @@ export default function Dashboard() {
           </div>
 
           <div className="mood-options">
-                                          
-  {[
-    { label: "Very Sad", emoji: "😢" },
-    { label: "Sad", emoji: "🙁" },
-    { label: "Neutral", emoji: "😐" },
-    { label: "Happy", emoji: "🙂" },
-    { label: "Very Happy", emoji: "😁" }
-  ].map(mood => (
 
-    <div
-      key={mood.label}
-      className={`mood ${
-        selectedMood === mood.label ? "active-mood" : ""
-      }`}
-      onClick={() => setSelectedMood(mood.label)}
-    >
-      {mood.emoji}
-      <span>{mood.label}</span>
-    </div>
+            {[
+              { label: "Very Sad", emoji: "😢" },
+              { label: "Sad", emoji: "🙁" },
+              { label: "Neutral", emoji: "😐" },
+              { label: "Happy", emoji: "🙂" },
+              { label: "Very Happy", emoji: "😁" }
+            ].map(mood => (
 
-  ))}
+              <div
+                key={mood.label}
+                className={`mood ${
+                  selectedMood === mood.label ? "active-mood" : ""
+                }`}
+                onClick={() => setSelectedMood(mood.label)}
+              >
+                {mood.emoji}
+                <span>{mood.label}</span>
+              </div>
 
-</div>
+            ))}
+
+          </div>
 
           <label>Add a note (optional)</label>
 
