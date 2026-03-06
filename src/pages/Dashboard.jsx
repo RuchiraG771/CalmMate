@@ -1,3 +1,4 @@
+import TextAnalysis from "../features/TextAnalysis";
 import React, { useState, useRef, useEffect } from "react";
 import "./Dashboard.css";
 import logo from "../assets/logo.png";
@@ -105,6 +106,11 @@ export default function Dashboard() {
 
       {/* ========= MAIN AREA ========= */}
       <div className="main-area">
+      <div className="content-area">
+
+{activeMenu === "Text" && <TextAnalysis />}
+
+</div>
 
         {/* ===== LEFT SIDEBAR ===== */}
         <div className="sidebar">

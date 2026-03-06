@@ -1,63 +1,21 @@
-import React, { useState } from "react";
-import "./App.css";
+import React from "react";
 
-function App() {
-  const [text, setText] = useState("");
-  const [analysis, setAnalysis] = useState(null);
-
-  const analyzeText = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/analyze", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message: text })
-      });
-
-      const data = await response.json();
-      setAnalysis(data);
-
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
+function TextAnalysis() {
   return (
-    <div className="container">
-      <h1>Mediation Text Emotion Analyzer</h1>
+    <div className="feature-page">
+      <h2>📝 Text Analysis</h2>
+      <p>Write how you feel and CalmMate will analyze your mood.</p>
 
       <textarea
-        placeholder="Enter your message..."
-        value={text}
-        onChange={(e) => setText(e.target.value)}
+        placeholder="Type your thoughts here..."
+        className="text-input"
       />
 
-      <button onClick={analyzeText}>Analyze</button>
-
-      {analysis && (
-        <div className="result">
-
-          <h2>Sentiment</h2>
-          <p>{analysis.sentiment}</p>
-
-          <h2>Detected Emotions</h2>
-
-          <ul>
-            {Object.entries(analysis.emotions).map(([emotion, score]) => (
-              <li key={emotion}>
-                <strong>{emotion}</strong>: {score}
-              </li>
-            ))}
-          </ul>
-
-          <h2>Toxicity Level</h2>
-          <p>{analysis.toxicity}</p>
-
-        </div>
-      )}
+      <button className="primary-btn">
+        Analyze Mood
+      </button>
     </div>
   );
 }
 
-export default App;
+export default TextAnalysis;
